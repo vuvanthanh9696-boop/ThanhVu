@@ -1,0 +1,6 @@
+{
+  "name": "DocuFlow - Quản lý Hồ sơ & Công việc Cá nhân Thông minh",
+  "description": "Nền tảng quản lý hồ sơ công việc, theo dõi tiến độ bước con, tự động phát hiện trùng lặp, điều hành Today View, trực quan hóa biểu đồ và đồng bộ lịch cá nhân.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
