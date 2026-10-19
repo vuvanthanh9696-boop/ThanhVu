@@ -9,6 +9,7 @@ import {
   ShieldAlert
 } from 'lucide-react';
 import { Docket, SmartNotification } from '../types';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface HeaderProps {
   dockets: Docket[];
@@ -70,6 +71,8 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Zone 3: Actions & Notifications */}
       <div className="flex items-center gap-2 shrink-0">
+        <PWAInstallButton variant="full" />
+
         <button
           onClick={onOpenBackupModal}
           title="Sao lưu & Xuất dữ liệu"

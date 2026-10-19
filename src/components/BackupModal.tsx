@@ -63,92 +63,92 @@ export const BackupModal: React.FC<BackupModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-      <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+      <div className="relative w-full max-w-lg bg-slate-100 rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7),0_0_0_2px_#cbd5e1] border-2 border-slate-300 overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150 text-slate-950">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50/80">
+        <div className="flex items-center justify-between px-6 py-4 border-b-2 border-slate-300 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
-              <Database className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md border border-blue-700">
+              <Database className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">
+              <h2 className="text-sm font-black text-slate-950">
                 Trung tâm Sao lưu & Xuất Dữ liệu
               </h2>
-              <span className="text-[11px] text-slate-500 font-mono tabular-nums">
+              <span className="text-xs text-slate-700 font-mono font-bold tabular-nums">
                 Lưu trữ: {dockets.length} hồ sơ · {totalSteps} bước con
               </span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
+            className="p-1.5 text-slate-600 hover:text-black hover:bg-slate-300 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-slate-400"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-6 space-y-4">
+        <div className="p-6 space-y-3.5 bg-slate-100">
           {importStatus && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-xs flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="p-3 bg-emerald-100 border-2 border-emerald-300 rounded-xl text-emerald-950 text-xs flex items-center gap-2 font-bold shadow-xs">
+              <Check className="w-4 h-4 text-emerald-700 shrink-0" />
               <span>{importStatus}</span>
             </div>
           )}
 
           {/* Option 1: Excel CSV */}
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3">
+          <div className="p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center justify-between gap-3 shadow-sm hover:border-slate-400 transition-all">
             <div>
-              <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+              <div className="text-xs font-black text-slate-950 flex items-center gap-1.5 uppercase tracking-wide">
+                <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
                 Xuất Bảng tính Excel (.csv)
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-700 font-medium mt-0.5">
                 Đầy đủ mã, tên trích yếu, tiến độ và hạn chót theo chuẩn tiếng Việt UTF-8.
               </p>
             </div>
             <button
               onClick={() => exportToCSV(dockets)}
-              className="px-3 py-1.5 text-xs font-semibold text-emerald-800 bg-emerald-100/80 hover:bg-emerald-200 rounded-lg transition-colors shrink-0 shadow-2xs"
+              className="px-3.5 py-2 text-xs font-black text-emerald-900 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 rounded-xl transition-colors shrink-0 shadow-xs cursor-pointer"
             >
               Tải Excel
             </button>
           </div>
 
           {/* Option 2: JSON Backup */}
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3">
+          <div className="p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center justify-between gap-3 shadow-sm hover:border-slate-400 transition-all">
             <div>
-              <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Download className="w-4 h-4 text-blue-600" />
+              <div className="text-xs font-black text-slate-950 flex items-center gap-1.5 uppercase tracking-wide">
+                <Download className="w-4 h-4 text-blue-700" />
                 Sao lưu Dữ liệu (.json)
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-700 font-medium mt-0.5">
                 Lưu trữ toàn bộ cấu trúc hồ sơ, các bước con, người làm và tài liệu để phục hồi khi cần.
               </p>
             </div>
             <button
               onClick={() => exportToJSON(dockets)}
-              className="px-3 py-1.5 text-xs font-semibold text-blue-800 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors shrink-0 shadow-2xs"
+              className="px-3.5 py-2 text-xs font-black text-blue-900 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-xl transition-colors shrink-0 shadow-xs cursor-pointer"
             >
               Tải JSON
             </button>
           </div>
 
           {/* Option 3: Restore JSON */}
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3">
+          <div className="p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center justify-between gap-3 shadow-sm hover:border-slate-400 transition-all">
             <div>
-              <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Upload className="w-4 h-4 text-indigo-600" />
+              <div className="text-xs font-black text-slate-950 flex items-center gap-1.5 uppercase tracking-wide">
+                <Upload className="w-4 h-4 text-indigo-700" />
                 Khôi phục từ Tệp sao lưu
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                Nạp lại dữ liệu từ tệp JSON đã lưu trước đó.
+              <p className="text-xs text-slate-700 font-medium mt-0.5">
+                Nạp lại dữ liệu từ tệp JSON đã lưu trước đó vào hệ thống.
               </p>
             </div>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-3 py-1.5 text-xs font-semibold text-indigo-800 bg-indigo-100 hover:bg-indigo-200 rounded-lg transition-colors shrink-0 shadow-2xs"
+              className="px-3.5 py-2 text-xs font-black text-indigo-900 bg-indigo-100 hover:bg-indigo-200 border border-indigo-300 rounded-xl transition-colors shrink-0 shadow-xs cursor-pointer"
             >
               Chọn tệp
             </button>
@@ -162,13 +162,13 @@ export const BackupModal: React.FC<BackupModalProps> = ({
           </div>
 
           {/* Option 4: Reset to Sample */}
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3">
+          <div className="p-4 bg-white border-2 border-slate-300 rounded-xl flex items-center justify-between gap-3 shadow-sm hover:border-slate-400 transition-all">
             <div>
-              <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <RotateCcw className="w-4 h-4 text-slate-500" />
+              <div className="text-xs font-black text-slate-950 flex items-center gap-1.5 uppercase tracking-wide">
+                <RotateCcw className="w-4 h-4 text-slate-700" />
                 Đặt lại Dữ liệu mẫu chuẩn
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-700 font-medium mt-0.5">
                 Nạp lại danh mục hồ sơ công sở mẫu ban đầu để tham khảo và trải nghiệm.
               </p>
             </div>
@@ -179,7 +179,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
                   onClose();
                 }
               }}
-              className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-200 hover:bg-slate-300 rounded-lg transition-colors shrink-0"
+              className="px-3.5 py-2 text-xs font-black text-slate-800 bg-slate-200 hover:bg-slate-300 border border-slate-400 rounded-xl transition-colors shrink-0 cursor-pointer"
             >
               Khôi phục
             </button>
@@ -187,10 +187,10 @@ export const BackupModal: React.FC<BackupModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
+        <div className="px-6 py-3.5 border-t-2 border-slate-300 bg-slate-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-200 rounded-lg border border-slate-300 transition-colors"
+            className="px-5 py-2 text-xs font-black text-slate-800 hover:text-black bg-slate-300 hover:bg-slate-400 rounded-xl border border-slate-400 transition-all cursor-pointer"
           >
             Đóng
           </button>

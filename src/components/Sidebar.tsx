@@ -1,27 +1,31 @@
 import React from 'react';
 import { 
-  CheckSquare, 
   FolderKanban, 
   BarChart3, 
   CalendarDays, 
-  FileSpreadsheet, 
   BellRing,
   RotateCcw,
   Sparkles,
   Layers,
-  CalendarCheck2
+  CalendarCheck2,
+  Target,
+  Github
 } from 'lucide-react';
 import { ActiveTab, Docket } from '../types';
 import { downloadICSFile } from '../utils/calendarSync';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface SidebarProps {
   activeTab: ActiveTab;
   onSelectTab: (tab: ActiveTab) => void;
   dockets: Docket[];
   todayUrgentCount: number;
+  yearlyTasksCount?: number;
   onResetData: () => void;
   onEnableNotifications: () => void;
   notificationPermission: NotificationPermission;
+  onOpenTemplateManager?: () => void;
+  onOpenGitHubSync?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -29,12 +33,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   dockets,
   todayUrgentCount,
+  yearlyTasksCount = 0,
   onResetData,
   onEnableNotifications,
   notificationPermission,
+  onOpenTemplateManager,
+  onOpenGitHubSync,
 }) => {
   const totalDockets = dockets.length;
-  const inProgressDockets = dockets.filter((d) => d.status === 'in_progress').length;
 
   return (
     <aside className="w-64 shrink-0 bg-[#0B0F19]/95 backdrop-blur-md border-r border-slate-800/90 flex flex-col justify-between h-full sticky top-0 select-none text-slate-300 z-20">
@@ -100,6 +106,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
+            onClick={() => onSelectTab('yearly')}
+            className={`w-full flex items-center justify-between px-3 py-2.5 text-xs rounded-xl transition-all group ${
+              activeTab === 'yearly'
+                ? 'bg-gradient-to-r from-blue-600/30 to-indigo-600/20 text-blue-200 font-bold border border-blue-500/50 shadow-[0_4px_14px_rgba(37,99,235,0.25),inset_0_1px_0_rgba(255,255,255,0.15)]'
+                : 'text-slate-300 hover:bg-slate-900/80 hover:text-white border border-transparent font-medium'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
+                activeTab === 'yearly'
+                  ? 'bg-gradient-to-tr from-blue-500 to-indigo-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.6)] border border-blue-400/50'
+                  : 'bg-slate-900 border border-slate-800 text-slate-400 group-hover:text-white group-hover:border-slate-700'
+              }`}>
+                <Target className="w-3.5 h-3.5" />
+              </div>
+              <span className="tracking-tight">Nhiệm vụ trọng tâm</span>
+            </div>
+            {yearlyTasksCount > 0 && (
+              <span className="px-2 py-0.5 text-[11px] font-mono tabular-nums text-indigo-300 bg-indigo-950/80 border border-indigo-800/80 rounded-lg font-bold">
+                {yearlyTasksCount}
+              </span>
+            )}
+          </button>
+
+          <button
             onClick={() => onSelectTab('analytics')}
             className={`w-full flex items-center justify-between px-3 py-2.5 text-xs rounded-xl transition-all group ${
               activeTab === 'analytics'
@@ -143,8 +174,45 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Quick Sync & Integrations */}
         <div className="pt-4 border-t border-slate-800/90 space-y-2">
           <div className="px-3 text-[11px] font-bold text-slate-400 tracking-wider uppercase">
-            Tiện ích đồng bộ
+            Tiện ích & Quy trình
           </div>
+
+          {/* PWA Desktop App install button */}
+          <div className="w-full">
+            <PWAInstallButton variant="sidebar" />
+          </div>
+
+          {onOpenTemplateManager && (
+            <button
+              onClick={onOpenTemplateManager}
+              className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-medium text-slate-200 bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 rounded-xl transition-all text-left group"
+              title="Quản lý bộ mẫu quy trình chuẩn hóa nhiều bước"
+            >
+              <div className="w-7 h-7 rounded-lg bg-indigo-950/80 border border-indigo-800/60 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Layers className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex flex-col truncate">
+                <span className="leading-tight font-semibold text-slate-200 group-hover:text-white">Bộ mẫu quy trình</span>
+                <span className="text-[10px] text-slate-400">Tùy biến bước con mẫu</span>
+              </div>
+            </button>
+          )}
+
+          {onOpenGitHubSync && (
+            <button
+              onClick={onOpenGitHubSync}
+              className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-medium text-slate-200 bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 rounded-xl transition-all text-left group"
+              title="Đồng bộ mã nguồn và dữ liệu sang GitHub"
+            >
+              <div className="w-7 h-7 rounded-lg bg-purple-950/80 border border-purple-800/60 text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Github className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex flex-col truncate">
+                <span className="leading-tight font-semibold text-slate-200 group-hover:text-white">Đồng bộ GitHub</span>
+                <span className="text-[10px] text-slate-400">Đẩy code & cập nhật web</span>
+              </div>
+            </button>
+          )}
 
           <button
             onClick={() => downloadICSFile(dockets)}

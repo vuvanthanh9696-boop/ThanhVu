@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="128" fill="url(#bg-gradient)"/>
+  <defs>
+    <linearGradient id="bg-gradient" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="50%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <!-- Document Sheet Layer 1 -->
+  <rect x="120" y="100" width="272" height="340" rx="24" fill="#0f172a" opacity="0.3" filter="url(#shadow)"/>
+  <!-- Document Sheet Layer 2 -->
+  <rect x="130" y="86" width="252" height="340" rx="24" fill="#ffffff" filter="url(#shadow)"/>
+  <!-- Top decorative bar -->
+  <rect x="160" y="126" width="100" height="16" rx="8" fill="#2563eb"/>
+  <!-- Text lines -->
+  <rect x="160" y="166" width="192" height="12" rx="6" fill="#94a3b8"/>
+  <rect x="160" y="196" width="160" height="12" rx="6" fill="#cbd5e1"/>
+  <rect x="160" y="226" width="180" height="12" rx="6" fill="#cbd5e1"/>
+  <!-- Checkmark badge 3D -->
+  <circle cx="340" cy="340" r="54" fill="#10b981" filter="url(#shadow)"/>
+  <path d="M318 340 L334 356 L366 324" stroke="#ffffff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

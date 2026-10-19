@@ -9,12 +9,15 @@ import {
   DocketStatus, 
   ActiveTab, 
   SmartNotification,
-  StepStatus
+  StepStatus,
+  YearlyTask
 } from './types';
 import { 
   loadDockets, 
   saveDockets, 
-  resetToSampleData 
+  resetToSampleData,
+  loadYearlyTasks,
+  saveYearlyTasks
 } from './utils/storage';
 import { 
   computeSmartNotifications, 
@@ -26,17 +29,25 @@ import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { TodayView } from './components/TodayView';
 import { DocketList } from './components/DocketList';
+import { YearlyTasksView } from './components/YearlyTasksView';
 import { AnalyticsView } from './components/AnalyticsView';
 import { CalendarView } from './components/CalendarView';
 import { DocketFormModal } from './components/DocketFormModal';
 import { DocketDetailModal } from './components/DocketDetailModal';
 import { NotificationDrawer } from './components/NotificationDrawer';
 import { BackupModal } from './components/BackupModal';
+import { TemplateManagerModal } from './components/TemplateManagerModal';
+import { GitHubSyncModal } from './components/GitHubSyncModal';
+import { loadWorkflowTemplates, WorkflowTemplate } from './utils/templates';
 
 export default function App() {
   const [dockets, setDockets] = useState<Docket[]>(() => loadDockets());
+  const [yearlyTasks, setYearlyTasks] = useState<YearlyTask[]>(() => loadYearlyTasks());
+  const [workflowTemplates, setWorkflowTemplates] = useState<WorkflowTemplate[]>(() => loadWorkflowTemplates());
   const [activeTab, setActiveTab] = useState<ActiveTab>('today');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isGlobalTemplateManagerOpen, setIsGlobalTemplateManagerOpen] = useState(false);
+  const [isGitHubSyncOpen, setIsGitHubSyncOpen] = useState(false);
 
   // Modals state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -69,6 +80,10 @@ export default function App() {
   useEffect(() => {
     saveDockets(dockets);
   }, [dockets]);
+
+  useEffect(() => {
+    saveYearlyTasks(yearlyTasks);
+  }, [yearlyTasks]);
 
   // Compute smart notifications
   const rawNotifications = useMemo(() => computeSmartNotifications(dockets), [dockets]);
@@ -219,10 +234,30 @@ export default function App() {
     showToast('Đã xóa hồ sơ khỏi hệ thống');
   };
 
+  // Yearly Tasks Handlers
+  const handleSaveYearlyTask = (task: YearlyTask) => {
+    setYearlyTasks((prev) => {
+      const exists = prev.some((t) => t.id === task.id);
+      if (exists) {
+        return prev.map((t) => (t.id === task.id ? task : t));
+      }
+      return [task, ...prev];
+    });
+    showToast(`Đã lưu nhiệm vụ năm: ${task.code}`);
+  };
+
+  const handleDeleteYearlyTask = (taskId: string) => {
+    const target = yearlyTasks.find((t) => t.id === taskId);
+    setYearlyTasks((prev) => prev.filter((t) => t.id !== taskId));
+    showToast(`Đã xóa nhiệm vụ ${target?.code || ''}`);
+  };
+
   // Reset sample data
   const handleResetData = () => {
     const samples = resetToSampleData();
     setDockets(samples);
+    const sampleTasks = loadYearlyTasks();
+    setYearlyTasks(sampleTasks);
     setReadNotifIds(new Set());
     showToast('Đã khôi phục dữ liệu mẫu thành công');
   };
@@ -283,9 +318,12 @@ export default function App() {
           onSelectTab={setActiveTab}
           dockets={dockets}
           todayUrgentCount={todayUrgentCount}
+          yearlyTasksCount={yearlyTasks.length}
           onResetData={handleResetData}
           onEnableNotifications={handleEnableNotifications}
           notificationPermission={notificationPermission}
+          onOpenTemplateManager={() => setIsGlobalTemplateManagerOpen(true)}
+          onOpenGitHubSync={() => setIsGitHubSyncOpen(true)}
         />
 
         {/* Viewport Content Canvas (CSS selector 2) */}
@@ -320,7 +358,26 @@ export default function App() {
               />
             )}
 
-            {activeTab === 'analytics' && <AnalyticsView dockets={dockets} />}
+            {activeTab === 'yearly' && (
+              <YearlyTasksView
+                yearlyTasks={yearlyTasks}
+                dockets={dockets}
+                onSaveTask={handleSaveYearlyTask}
+                onDeleteTask={handleDeleteYearlyTask}
+                onOpenDocketDetail={handleOpenDocketDetail}
+              />
+            )}
+
+            {activeTab === 'analytics' && (
+              <AnalyticsView 
+                dockets={dockets} 
+                yearlyTasks={yearlyTasks}
+                onSaveYearlyTask={handleSaveYearlyTask}
+                onDeleteYearlyTask={handleDeleteYearlyTask}
+                onOpenDocketDetail={handleOpenDocketDetail}
+                onNavigateToYearly={() => setActiveTab('yearly')}
+              />
+            )}
 
             {activeTab === 'calendar' && (
               <CalendarView
@@ -397,6 +454,42 @@ export default function App() {
         }}
         onResetData={handleResetData}
       />
+
+      {/* Modal 4: Quản lý & Tùy chỉnh Mẫu Quy trình toàn hệ thống */}
+      {isGlobalTemplateManagerOpen && (
+        <TemplateManagerModal
+          isOpen={isGlobalTemplateManagerOpen}
+          onClose={() => setIsGlobalTemplateManagerOpen(false)}
+          templates={workflowTemplates}
+          onTemplatesChange={(newTemplates) => {
+            setWorkflowTemplates(newTemplates);
+            showToast('Đã lưu các thay đổi mẫu quy trình');
+          }}
+          onSelectTemplateToLoad={(templateId) => {
+            setIsGlobalTemplateManagerOpen(false);
+            setEditingDocket(null);
+            setIsCreateModalOpen(true);
+          }}
+        />
+      )}
+
+      {/* Modal 5: Đồng bộ mã nguồn & dữ liệu sang GitHub */}
+      {isGitHubSyncOpen && (
+        <GitHubSyncModal
+          isOpen={isGitHubSyncOpen}
+          onClose={() => setIsGitHubSyncOpen(false)}
+          onExportJson={() => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dockets, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `docuflow_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(dlAnchorElem);
+            dlAnchorElem.click();
+            document.body.removeChild(dlAnchorElem);
+            showToast('Đã tải xuống tệp JSON sao lưu dữ liệu!');
+          }}
+        />
+      )}
     </div>
   );
 }

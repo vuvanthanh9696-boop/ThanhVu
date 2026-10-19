@@ -61,7 +61,99 @@ export interface SmartNotification {
   read: boolean;
 }
 
-export type ActiveTab = 'today' | 'dockets' | 'analytics' | 'calendar';
+export type ActiveTab = 'today' | 'dockets' | 'yearly' | 'analytics' | 'calendar';
+
+export type YearlyTaskQuarter = 'all_year' | 'q1' | 'q2' | 'q3' | 'q4';
+
+export type YearlyTaskStatus = 'planning' | 'in_progress' | 'completed' | 'delayed';
+
+export interface YearlyTask {
+  id: string;
+  year: number; // e.g. 2026
+  code: string; // e.g. NV-2026-01
+  title: string; // Tên nhiệm vụ trọng tâm cả năm
+  description?: string; // Diễn giải chi tiết / Mục tiêu cụ thể
+  category: string; // Lĩnh vực
+  quarter: YearlyTaskQuarter; // Quý thực hiện hoặc Cả năm
+  leadDepartment: string; // Đơn vị chủ trì
+  leadPerson: string; // Cán bộ phụ trách chính
+  priority: Priority;
+  status: YearlyTaskStatus;
+  progress: number; // 0 - 100%
+  targetMetric?: string; // Chỉ tiêu / Sản phẩm đầu ra bắt buộc
+  linkedDocketIds: string[]; // Danh sách ID các hồ sơ công việc trực thuộc nhiệm vụ này
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const YEARLY_TASK_QUARTERS: Record<YearlyTaskQuarter, { label: string; shortLabel: string; bgClass: string; textClass: string; borderClass: string }> = {
+  all_year: {
+    label: 'Cả năm',
+    shortLabel: 'Năm',
+    bgClass: 'bg-indigo-950/80',
+    textClass: 'text-indigo-300',
+    borderClass: 'border-indigo-700/70',
+  },
+  q1: {
+    label: 'Quý I',
+    shortLabel: 'Q1',
+    bgClass: 'bg-sky-950/80',
+    textClass: 'text-sky-300',
+    borderClass: 'border-sky-700/70',
+  },
+  q2: {
+    label: 'Quý II',
+    shortLabel: 'Q2',
+    bgClass: 'bg-emerald-950/80',
+    textClass: 'text-emerald-300',
+    borderClass: 'border-emerald-700/70',
+  },
+  q3: {
+    label: 'Quý III',
+    shortLabel: 'Q3',
+    bgClass: 'bg-amber-950/80',
+    textClass: 'text-amber-300',
+    borderClass: 'border-amber-700/70',
+  },
+  q4: {
+    label: 'Quý IV',
+    shortLabel: 'Q4',
+    bgClass: 'bg-purple-950/80',
+    textClass: 'text-purple-300',
+    borderClass: 'border-purple-700/70',
+  },
+};
+
+export const YEARLY_TASK_STATUS_CONFIG: Record<YearlyTaskStatus, { label: string; textClass: string; bgClass: string; borderClass: string; dotClass: string }> = {
+  planning: {
+    label: 'Lập kế hoạch',
+    textClass: 'text-slate-300',
+    bgClass: 'bg-slate-800/90',
+    borderClass: 'border-slate-700',
+    dotClass: 'bg-slate-400',
+  },
+  in_progress: {
+    label: 'Đang triển khai',
+    textClass: 'text-blue-300',
+    bgClass: 'bg-blue-950/90',
+    borderClass: 'border-blue-700/80',
+    dotClass: 'bg-blue-400',
+  },
+  completed: {
+    label: 'Đạt chỉ tiêu',
+    textClass: 'text-emerald-300',
+    bgClass: 'bg-emerald-950/90',
+    borderClass: 'border-emerald-700/80',
+    dotClass: 'bg-emerald-400',
+  },
+  delayed: {
+    label: 'Chậm tiến độ',
+    textClass: 'text-rose-300',
+    bgClass: 'bg-rose-950/90',
+    borderClass: 'border-rose-700/80',
+    dotClass: 'bg-rose-400',
+  },
+};
 
 export const PRIORITY_CONFIG: Record<Priority, { label: string; textClass: string; bgClass: string; borderClass: string }> = {
   urgent: {

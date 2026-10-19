@@ -1,6 +1,7 @@
-import { Docket, DocketStep } from '../types';
+import { Docket, DocketStep, YearlyTask } from '../types';
 
 const STORAGE_KEY = 'docuflow_dockets_v1';
+const YEARLY_TASKS_STORAGE_KEY = 'docuflow_yearly_tasks_v1';
 
 export const INITIAL_DOCKETS: Docket[] = [
   {
@@ -474,9 +475,257 @@ export function exportToJSON(dockets: Docket[]): void {
 }
 
 /**
- * Reset to sample demo data
+ * Initial sample strategic goals / key annual tasks
+ */
+export const INITIAL_YEARLY_TASKS: YearlyTask[] = [
+  {
+    id: 'yt-001',
+    year: 2026,
+    code: 'NV-2026-01',
+    title: 'Hiện đại hóa hạ tầng mạng & đảm bảo an toàn thông tin cấp độ 3 toàn cơ quan',
+    description: 'Nâng cấp toàn bộ hệ thống tường lửa thế hệ mới (Next-Gen Firewall), chuyển đổi địa chỉ IPv6 và đạt chứng nhận ATTT cấp độ 3 theo Nghị định 85/2016/NĐ-CP.',
+    category: 'Dự án & Chuyển đổi số',
+    quarter: 'q1',
+    leadDepartment: 'Phòng Công nghệ Thông tin',
+    leadPerson: 'Tôi (Cá nhân)',
+    priority: 'urgent',
+    status: 'in_progress',
+    progress: 70,
+    targetMetric: 'Hoàn thành thẩm định thiết kế, dự toán và ký hợp đồng thi công trước 30/11/2026',
+    linkedDocketIds: ['docket-001'],
+    createdAt: '2026-01-10T08:00:00Z',
+    updatedAt: '2026-10-15T10:00:00Z',
+  },
+  {
+    id: 'yt-002',
+    year: 2026,
+    code: 'NV-2026-02',
+    title: 'Xây dựng Đề án Chuyển đổi số & Cơ sở dữ liệu chuyên ngành tập trung giai đoạn 2026 - 2030',
+    description: 'Xây dựng kho dữ liệu dùng chung (Data Lake), tích hợp liên thông với Cổng Dịch vụ công Quốc gia và Trục kết nối liên thông dữ liệu NDXP.',
+    category: 'Dự án & Chuyển đổi số',
+    quarter: 'q2',
+    leadDepartment: 'Phòng Kế hoạch & Đầu tư',
+    leadPerson: 'Tôi (Cá nhân) - phối hợp: Trần Thị Mai',
+    priority: 'high',
+    status: 'in_progress',
+    progress: 45,
+    targetMetric: 'Trình UBND thành phố phê duyệt Đề cương dự toán chi tiết và kế hoạch lựa chọn nhà thầu',
+    linkedDocketIds: ['docket-002'],
+    createdAt: '2026-02-15T08:00:00Z',
+    updatedAt: '2026-10-14T11:00:00Z',
+  },
+  {
+    id: 'yt-003',
+    year: 2026,
+    code: 'NV-2026-03',
+    title: 'Thanh tra toàn diện công tác quản trị nội bộ & thực thi công vụ tại các đơn vị',
+    description: 'Tổ chức 05 đoàn thanh tra chuyên đề về việc chấp hành quy chế làm việc, quản lý tài sản công và tiếp công dân theo đúng chỉ đạo.',
+    category: 'Thanh tra - Pháp chế',
+    quarter: 'q3',
+    leadDepartment: 'Văn phòng Ban',
+    leadPerson: 'Tôi (Cá nhân) - phối hợp: Lê Hoàng Nam',
+    priority: 'high',
+    status: 'in_progress',
+    progress: 80,
+    targetMetric: 'Ban hành kết luận thanh tra đúng hạn, đôn đốc 100% kiến nghị xử lý sau thanh tra',
+    linkedDocketIds: ['docket-003'],
+    createdAt: '2026-03-01T08:00:00Z',
+    updatedAt: '2026-09-30T15:00:00Z',
+  },
+  {
+    id: 'yt-004',
+    year: 2026,
+    code: 'NV-2026-04',
+    title: 'Quyết toán vốn đầu tư công & Nghiệm thu bàn giao trụ sở làm việc giai đoạn 1',
+    description: 'Thực hiện kiểm toán độc lập, hoàn tất hồ sơ nghiệm thu phòng cháy chữa cháy và nghiệm thu hoàn thành công trình đưa vào sử dụng.',
+    category: 'Nghiệm thu - Bàn giao',
+    quarter: 'q4',
+    leadDepartment: 'Ban Quản lý Dự án',
+    leadPerson: 'Tôi (Cá nhân)',
+    priority: 'urgent',
+    status: 'completed',
+    progress: 100,
+    targetMetric: 'Giải ngân 100% kế hoạch vốn giao năm 2026 qua Kho bạc Nhà nước trước 31/12',
+    linkedDocketIds: ['docket-004'],
+    createdAt: '2026-01-20T08:00:00Z',
+    updatedAt: '2026-09-29T17:00:00Z',
+  },
+  {
+    id: 'yt-005',
+    year: 2026,
+    code: 'NV-2026-05',
+    title: 'Nâng cao chất lượng tiếp nhận, giải quyết phản ánh kiến nghị của tổ chức và công dân',
+    description: 'Đảm bảo tỷ lệ hài lòng của người dân trên 95%, chấm dứt hoàn toàn tình trạng hồ sơ trễ hạn không có văn bản xin lỗi.',
+    category: 'Văn bản & Tham mưu',
+    quarter: 'all_year',
+    leadDepartment: 'Bộ phận Tiếp nhận & Trả kết quả',
+    leadPerson: 'Tôi (Cá nhân) - phối hợp: Phạm Thu Hà',
+    priority: 'medium',
+    status: 'in_progress',
+    progress: 55,
+    targetMetric: '100% đơn thư khiếu nại, phản ánh được phân loại và xử lý theo đúng quy trình 7 ngày',
+    linkedDocketIds: ['docket-005'],
+    createdAt: '2026-01-05T08:00:00Z',
+    updatedAt: '2026-10-12T09:00:00Z',
+  },
+  {
+    id: 'yt-006',
+    year: 2026,
+    code: 'NV-2026-06',
+    title: 'Đào tạo kỹ năng số, chuẩn hóa quy trình số hóa hồ sơ cho 100% cán bộ công chức',
+    description: 'Tổ chức tập huấn sử dụng phần mềm quản lý hồ sơ công việc điện tử và khai thác an toàn trên môi trường mạng.',
+    category: 'Nhân sự - Đào tạo',
+    quarter: 'q2',
+    leadDepartment: 'Văn phòng Ban',
+    leadPerson: 'Tôi (Cá nhân) - phối hợp: Trần Thị Mai',
+    priority: 'medium',
+    status: 'completed',
+    progress: 100,
+    targetMetric: '100% cán bộ tham gia kiểm tra sát hạch đạt yêu cầu và thành thạo thao tác offline/online',
+    linkedDocketIds: [],
+    createdAt: '2026-02-10T08:00:00Z',
+    updatedAt: '2026-06-15T16:00:00Z',
+  },
+];
+
+/**
+ * Load Yearly Tasks from LocalStorage
+ */
+export function loadYearlyTasks(): YearlyTask[] {
+  try {
+    const raw = localStorage.getItem(YEARLY_TASKS_STORAGE_KEY);
+    if (!raw) {
+      localStorage.setItem(YEARLY_TASKS_STORAGE_KEY, JSON.stringify(INITIAL_YEARLY_TASKS));
+      return INITIAL_YEARLY_TASKS;
+    }
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed;
+    }
+    return INITIAL_YEARLY_TASKS;
+  } catch (err) {
+    console.error('Failed to load yearly tasks:', err);
+    return INITIAL_YEARLY_TASKS;
+  }
+}
+
+/**
+ * Save Yearly Tasks to LocalStorage
+ */
+export function saveYearlyTasks(tasks: YearlyTask[]): void {
+  try {
+    localStorage.setItem(YEARLY_TASKS_STORAGE_KEY, JSON.stringify(tasks));
+  } catch (err) {
+    console.error('Failed to save yearly tasks:', err);
+  }
+}
+
+/**
+ * Reset to sample demo data for both Dockets and Yearly Tasks
  */
 export function resetToSampleData(): Docket[] {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_DOCKETS));
+  localStorage.setItem(YEARLY_TASKS_STORAGE_KEY, JSON.stringify(INITIAL_YEARLY_TASKS));
   return INITIAL_DOCKETS;
+}
+
+export function resetToSampleYearlyTasks(): YearlyTask[] {
+  localStorage.setItem(YEARLY_TASKS_STORAGE_KEY, JSON.stringify(INITIAL_YEARLY_TASKS));
+  return INITIAL_YEARLY_TASKS;
+}
+
+/**
+ * Export Yearly Tasks to CSV
+ */
+export function exportYearlyTasksToCSV(tasks: YearlyTask[], year = 2026): void {
+  const headers = [
+    'Mã nhiệm vụ',
+    'Năm',
+    'Quý / Kỳ hạn',
+    'Tên nhiệm vụ trọng tâm',
+    'Lĩnh vực',
+    'Đơn vị chủ trì',
+    'Cán bộ phụ trách',
+    'Độ ưu tiên',
+    'Trạng thái',
+    'Tiến độ (%)',
+    'Chỉ tiêu / Sản phẩm đầu ra',
+    'Số hồ sơ liên kết',
+    'Mô tả chi tiết',
+  ];
+
+  const rows = tasks.map((t) => [
+    `"${t.code}"`,
+    t.year,
+    `"${t.quarter.toUpperCase()}"`,
+    `"${t.title.replace(/"/g, '""')}"`,
+    `"${t.category.replace(/"/g, '""')}"`,
+    `"${t.leadDepartment.replace(/"/g, '""')}"`,
+    `"${t.leadPerson.replace(/"/g, '""')}"`,
+    `"${t.priority}"`,
+    `"${t.status}"`,
+    `${t.progress}%`,
+    `"${(t.targetMetric || '').replace(/"/g, '""')}"`,
+    t.linkedDocketIds?.length || 0,
+    `"${(t.description || '').replace(/"/g, '""')}"`,
+  ]);
+
+  const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `KeHoachNhiemVuTrongTam_${year}_DocuFlow.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Generates and downloads a 1-click Windows Launcher Batch (.bat) file
+ * that launches the exact local file path on the user's PC without browser sandbox restrictions!
+ */
+export function downloadWindowsLauncher(filePath: string, docketCode: string): void {
+  if (!filePath) return;
+
+  // Normalize path with Windows backslashes
+  const winPath = filePath.replace(/\//g, '\\');
+  const cleanCode = docketCode.replace(/[^a-zA-Z0-9_-]/g, '_');
+
+  const batContent = `@echo off
+chcp 65001 > nul
+title DocuFlow - Mở hồ sơ gốc: ${cleanCode}
+echo ======================================================================
+echo  DOCUFLOW OFFLINE LAUNCHER - HO SO GOC
+echo  Ma ho so: ${docketCode}
+echo  Duong dan tep: ${winPath}
+echo ======================================================================
+echo Dang khoi chay tep tren may tinh...
+
+if exist "${winPath}" (
+    start "" "${winPath}"
+    echo [OK] Da mo tep thanh cong tren may tinh!
+    timeout /t 2 > nul
+    exit
+) else (
+    echo [Luu y] Khong tim thay tep tai duong dan chinh xac:
+    echo "${winPath}"
+    echo.
+    echo Dang mo thu muc chua ho so trong File Explorer...
+    for %%F in ("${winPath}") do start "" "%%~dpF"
+    pause
+    exit
+)
+`;
+
+  const blob = new Blob([batContent], { type: 'application/x-bat;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `Mo_HoSo_${cleanCode}.bat`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
